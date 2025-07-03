@@ -1,0 +1,145 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <script type="text/javascript">
+            let missions = []
+            let nowId = 0
+            let mission_t = {
+                id : 0,
+                status : 0,
+                node : ""
+            }
+            function createMission(missionName,status = 0){
+                let insterTarget = document.getElementById("iT")
+                if (missionName === ""){
+                    missionName = `任务 + ${missions.length}`
+                }
+                let tnode = createMissionElement(missionName,status,nowId+1)
+                console.log(tnode)
+                let mission_t = {
+                id : nowId + 1,
+                status : status,
+                node : tnode
+                }
+                nowId +=1
+                return mission_t
+            }
+            function createMissionElement (missionName,status,id){
+                let template = document.getElementById("mission-template")
+                let tnode = template.content.cloneNode(true)
+                console.log(tnode)
+                let buttons = tnode.querySelectorAll('button')
+                let missionNameNode = tnode.querySelector("#missionNameT")
+                let missionStatusNode = tnode.querySelector("#missionStatusT")
+                let missionNode = tnode.querySelector("#missionT")
+                missionNode.id =  `missionT${id}`
+                missionNameNode.id = `missionNameT${id}`
+                missionStatusNode.id = `missionStatusT${id}`
+                buttons[0].onclick = ()=>onConfirmMission(id)
+                buttons[1].onclick = ()=>onDeleteMission(id)
+                missionNameNode.innerText = missionName
+                if (status === 0){
+                    missionStatusNode.innerText = "未完成"
+                }
+                else{
+                    missionStatusNode.innerText = "已经完成"
+                }
+                return tnode
+            }
+            function onAddMission(){
+                let missionName = document.getElementById("missionName")
+                let wait = document.getElementById("wait")
+                if(missionName.value === ""){
+                    alert("请输入内容后再添加")
+                    return
+                }
+                let mission = createMission(missionName.value,0)
+                missions.push(mission)
+                document.getElementById("iT").appendChild(mission.node)
+                wait.value = getMissionStatus0()
+            }
+            function onConfirmMission(id){
+                let wait = document.getElementById("wait")
+                for (let mission of missions){
+                    if (mission.id === id){
+                        mission.status = 1
+                        let td = document.getElementById(`missionStatusT${id}`)
+                        td.innerText= "已完成"
+                    }
+                }
+                wait.value = getMissionStatus0()
+            }
+            function onDeleteMission(id){
+                let iT = document.getElementById("iT")
+                let wait = document.getElementById("wait")
+                for (let mission of missions){
+                    if (mission.id === id){
+                        iT.removeChild(document.getElementById(`missionT${id}`))
+                        missions.splice(missions.indexOf(mission),1)
+                    }
+                }
+                wait.value = getMissionStatus0()
+            }
+            function getMissionStatus0(){
+                let count = 0
+                for (let misison of missions){
+                    if (misison.status === 0) count++
+                }
+                return count
+            }
+        </script>
+        <style>
+            .my-head{
+                display: flex;
+                flex-direction: r;
+            }
+            .my-head  > div {
+                padding: 3px;
+                border: 1px;
+                border-style: solid;
+            }
+            .my-body > div >div {
+                padding: 3px;
+                border: 1px;
+                border-style: solid;
+            }
+            .context {
+                display: flex;
+                flex-direction: column;
+                border: 1px solid;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>
+            代办事宜
+        </h1>
+        <div>
+            <label for="wait">当前未完成任务数：</label>
+            <input  id="wait" type="number" value="0" name="wait">
+        </div>
+        <div>
+            <input id="missionName" name="missionName">
+            <button onclick="onAddMission()">添加任务</button>
+        </div>
+        <table >
+            <tr>
+                <th>任务内容</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+            <tbody id="iT">
+            </tbody>
+        </table>
+        <template id="mission-template">
+            <tr id="missionT">
+                <td id="missionNameT"></td>
+                <td id="missionStatusT"></td>
+                <td>
+                    <button>完成</button>
+                    <button>删除</button>
+                </td>
+            </tr>
+        </template>
+    </body>
+</html>
