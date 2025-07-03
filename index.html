@@ -27,7 +27,6 @@
             function createMissionElement (missionName,status,id){
                 let template = document.getElementById("mission-template")
                 let tnode = template.content.cloneNode(true)
-                console.log(tnode)
                 let buttons = tnode.querySelectorAll('button')
                 let missionNameNode = tnode.querySelector("#missionNameT")
                 let missionStatusNode = tnode.querySelector("#missionStatusT")
@@ -35,6 +34,7 @@
                 missionNode.id =  `missionT${id}`
                 missionNameNode.id = `missionNameT${id}`
                 missionStatusNode.id = `missionStatusT${id}`
+                missionNode.classList.add("notok")
                 buttons[0].onclick = ()=>onConfirmMission(id)
                 buttons[1].onclick = ()=>onDeleteMission(id)
                 missionNameNode.innerText = missionName
@@ -89,6 +89,12 @@
             }
         </script>
         <style>
+            .ok {
+                background-color: greenyellow;
+            }
+            .notok{
+                background-color: yellow;
+            }
             .my-head{
                 display: flex;
                 flex-direction: r;
@@ -122,7 +128,8 @@
             <input id="missionName" name="missionName">
             <button onclick="onAddMission()">添加任务</button>
         </div>
-        <table >
+        <hr>
+        <table border="1">
             <tr>
                 <th>任务内容</th>
                 <th>状态</th>
